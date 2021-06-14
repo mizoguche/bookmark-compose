@@ -18,7 +18,6 @@ class HatebuRssClient @Inject constructor() {
                 .build()
             okHttpClient.newCall(request).await().body?.string()
         } ?: throw IllegalStateException("no response")
-        println(rssString)
         return HatebuRssParser.parse(rssString)
     }
 
