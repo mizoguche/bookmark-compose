@@ -18,10 +18,8 @@ class HatebuRssClient @Inject constructor() {
                 .build()
             okHttpClient.newCall(request).await().body?.string()
         } ?: throw IllegalStateException("no response")
-        return HatebuRssParser.parse(rssString)
+        return withContext(Dispatchers.Default) { HatebuRssParser.parse(rssString) }
     }
 
-    suspend fun getHotentry(): Category {
-        return get("https://b.hatena.ne.jp/hotentry/all.rss")
-    }
+    suspend fun getHotentry(): Category = get("https://b.hatena.ne.jp/hotentry/all.rss")
 }
