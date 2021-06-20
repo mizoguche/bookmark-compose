@@ -74,7 +74,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.activity:activity-compose:1.3.0-beta01")
 
-    implementation("com.google.accompanist:accompanist-coil:0.10.0")
+    implementation("com.google.accompanist:accompanist-coil:${rootProject.extra["accompanist_version"]}")
+    implementation("com.google.accompanist:accompanist-swiperefresh:${rootProject.extra["accompanist_version"]}")
 
     // Dagger Hilt
     implementation("com.google.dagger:hilt-android:${rootProject.extra["dagger_version"]}")

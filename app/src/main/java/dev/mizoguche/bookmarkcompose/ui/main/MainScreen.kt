@@ -2,20 +2,12 @@ package dev.mizoguche.bookmarkcompose.ui.main
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,17 +28,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.mizoguche.bookmarkcompose.R
 import dev.mizoguche.bookmarkcompose.domain.Article
-import dev.mizoguche.bookmarkcompose.logDebug
 import dev.mizoguche.bookmarkcompose.ui.Placeholder
 import dev.mizoguche.bookmarkcompose.ui.TextPlaceholder
 import dev.mizoguche.bookmarkcompose.ui.theme.BookmarkComposeTheme
@@ -57,8 +48,8 @@ fun MainScreen(
     viewModel: MainViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val articles = viewModel.articles.collectAsState()
-    val viewStatus = viewModel.viewStatus.collectAsState()
+    val articles by viewModel.articles.collectAsState()
+    val viewStatus by viewModel.viewStatus.collectAsState()
 
     Surface(modifier = modifier.fillMaxSize()) {
         Box(
@@ -66,16 +57,23 @@ fun MainScreen(
                 .padding(16.dp)
                 .fillMaxSize(),
         ) {
-            Crossfade(targetState = viewStatus.value) {
-                when (it) {
-                    is ViewStatus.Ready -> {
-                        Articles(
-                            articles = articles.value,
-                            modifier = Modifier.fillMaxSize(),
-                        )
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(
+                    isRefreshing = (viewStatus as? ViewStatus.Ready)?.isRefreshing ?: false
+                ),
+                onRefresh = { viewModel.refresh() },
+            ) {
+                Crossfade(targetState = viewStatus) {
+                    when (it) {
+                        is ViewStatus.Ready -> {
+                            Articles(
+                                articles = articles,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+                        is ViewStatus.Loading -> ArticlesPlaceholder()
+                        is ViewStatus.Error -> Text(text = "error")
                     }
-                    is ViewStatus.Processing -> ArticlesPlaceholder()
-                    is ViewStatus.Error -> Text(text = "error")
                 }
             }
         }

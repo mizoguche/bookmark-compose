@@ -4,6 +4,7 @@ buildscript {
     val compose_version by extra("1.0.0-beta09")
     val dagger_version by extra("2.36")
     val okhttp_version by extra("4.9.0")
+    val accompanist_version by extra("0.12.0")
 
     repositories {
         google()
