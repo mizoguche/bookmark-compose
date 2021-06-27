@@ -33,6 +33,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieAnimationSpec
+import com.airbnb.lottie.compose.rememberLottieAnimationState
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -125,6 +128,8 @@ fun ArticleItem(
     article: Article,
 ) {
     val context = LocalContext.current
+    val animationSpec = remember { LottieAnimationSpec.RawRes(R.raw.bookmark) }
+
     BoxWithConstraints(modifier = modifier) {
         Card(
             modifier = modifier
@@ -153,6 +158,12 @@ fun ArticleItem(
                 }
 
                 Column(modifier = Modifier.padding(8.dp)) {
+                    LottieAnimation(
+                        animationSpec,
+                        modifier = Modifier.size(32.dp),
+                        animationState = rememberLottieAnimationState(repeatCount = Int.MAX_VALUE),
+                    )
+
                     Text(
                         text = article.title,
                         maxLines = 2,

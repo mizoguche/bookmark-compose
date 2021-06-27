@@ -91,6 +91,9 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor")
     implementation("ru.gildor.coroutines:kotlin-coroutines-okhttp:1.0")
 
+    // Lottie
+    implementation("com.airbnb.android:lottie-compose:${rootProject.extra["lottie_version"]}")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
